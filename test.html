@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chúc mừng Tết Trung Thu</title>
+  <meta name="description" content="Thiệp web chúc mừng Tết Trung Thu — cá nhân hoá tên người nhận qua URL (?to=Ten)&from=Tên bạn" />
+  <style>
+    :root{
+      --bg1:#0b1026; /* night sky */
+      --bg2:#1b2a5b;
+      --moon:#ffe8a3;
+      --accent:#ffb100;
+      --pink:#ff8fb1;
+      --cyan:#7ee8fa;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:#fff; background:radial-gradient(80% 100% at 50% 20%, var(--bg2), var(--bg1));
+      overflow-x:hidden;
+    }
+    .sky{position:fixed; inset:0; overflow:hidden; z-index:0}
+    .stars{position:absolute; inset:0; background:transparent;}
+    /* create tiny stars */
+    .stars::before, .stars::after{
+      content:""; position:absolute; inset:0; background-repeat:repeat; pointer-events:none;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.9) 50%, transparent 51%),
+        radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,.8) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 80% 40%, rgba(255,255,255,.85) 50%, transparent 51%),
+        radial-gradient(1px 1px at 35% 85%, rgba(255,255,255,.7) 50%, transparent 51%);
+      animation: twinkle 6s linear infinite;
+    }
+    .stars::after{ animation-direction:reverse; opacity:.6 }
+    @keyframes twinkle { 0%{opacity:.9} 50%{opacity:.4} 100%{opacity:.9} }
+
+    /* Moon */
+    .moon{ position:absolute; top:7vh; right:8vw; width:130px; aspect-ratio:1; border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, #fff, var(--moon) 60%, rgba(255,255,255,0.1) 62%, transparent 65%), var(--moon);
+      box-shadow:0 0 30px 10px rgba(255,224,130,.45), 0 0 120px 40px rgba(255,224,130,.25);
+      filter:saturate(1.1);
+    }
+
+    /* Lanterns */
+    .lantern{ position:absolute; bottom:-140px; width:70px; height:90px; border-radius:30px; background:linear-gradient(180deg, #ffebb8, #ffcf66);
+      box-shadow:0 0 18px 6px rgba(255,191,71,.5);
+      transform-origin:50% -60px; /* swing around virtual hook */
+      animation: rise 16s linear infinite, swing 4.5s ease-in-out infinite;
+    }
+    .lantern::before{ /* tassel */
+      content:""; position:absolute; bottom:-24px; left:50%; width:4px; height:24px; transform:translateX(-50%);
+      background:linear-gradient(var(--accent), #e07a00);
+    }
+    .lantern::after{ /* flame */
+      content:""; position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:12px; height:18px; border-radius:50% 50% 45% 45%;
+      background:radial-gradient(circle at 50% 30%, #fff 30%, #ffd166 60%, rgba(255,160,0,.3) 75%);
+      filter:blur(.4px);
+      animation:flicker .9s infinite alternate;
+    }
+    @keyframes flicker{ from{transform:translateX(-50%) scale(1)} to{transform:translateX(-50%) scale(1.08)} }
+    @keyframes rise{ from{ transform:translateY(0) } to{ transform:translateY(-120vh) } }
+    @keyframes swing{ 0%{ rotate:-4deg } 50%{ rotate:4deg } 100%{ rotate:-4deg } }
+
+    /* Position some lanterns with delays */
+    .l1{ left:8vw; animation-delay:0s, .2s }
+    .l2{ left:22vw; width:58px; height:78px; animation-delay:4s, .1s }
+    .l3{ left:40vw; width:64px; height:86px; animation-delay:8s, .6s }
+    .l4{ left:65vw; animation-delay:12s, .3s }
+    .l5{ left:82vw; width:54px; height:74px; animation-delay:2s, .5s }
+
+    /* Content */
+    main{ position:relative; z-index:2; display:grid; place-items:center; min-height:100vh; padding:48px 16px 72px }
+    .card{ width:min(780px, 92vw); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); border-radius:24px; backdrop-filter: blur(8px);
+      padding:28px 24px 36px; box-shadow: 0 10px 40px rgba(0,0,0,.35);
+    }
+    h1{ font-size: clamp(28px, 4.2vw, 44px); margin:6px 0 10px; letter-spacing:.3px }
+    .subtitle{ color:#e6f0ff; opacity:.92; font-size:clamp(16px, 2.6vw, 20px) }
+    .highlight{ color:var(--accent); font-weight:700 }
+    .msg{ margin-top:18px; line-height:1.7; font-size:clamp(16px, 2.6vw, 19px) }
+
+    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px }
+    .chip{ padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); font-size:14px }
+
+    .actions{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px }
+    button, .btn{
+      all:unset; cursor:pointer; padding:12px 16px; border-radius:12px; background:linear-gradient(90deg, #ffcf66, #ff9f43);
+      color:#271a00; font-weight:700; box-shadow:0 6px 18px rgba(255,183,77,.35);
+    }
+    .btn.secondary{ background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.18); box-shadow:none }
+
+    footer{ position:relative; z-index:2; text-align:center; margin:16px 0 28px; opacity:.8; font-size:14px }
+    a{ color:#ffe082 }
+
+    /* Mobile tune */
+    @media (max-width:560px){ .moon{ width:95px; right:5vw } }
+  </style>
+</head>
+<body>
+  <div class="sky">
+    <div class="stars"></div>
+    <div class="moon" aria-hidden="true"></div>
+    <div class="lantern l1"></div>
+    <div class="lantern l2"></div>
+    <div class="lantern l3"></div>
+    <div class="lantern l4"></div>
+    <div class="lantern l5"></div>
+  </div>
+
+  <main>
+    <section class="card" role="region" aria-label="Thiệp chúc mừng Trung Thu">
+      <p class="subtitle">Gửi <span id="toName" class="highlight">bạn thân</span> 🎑</p>
+      <h1>Chúc mừng <span class="highlight">Tết Trung Thu</span>!</h1>
+      <p class="msg" id="message">
+        Chúc bạn và gia đình một đêm rằm trăng sáng, bình an và tròn đầy như chiếc bánh trung thu. 
+        Mong mọi điều tốt lành sẽ ghé đến, học tập/công việc thuận lợi, nụ cười luôn nở trên môi.
+      </p>
+      <div class="chips" aria-hidden="true">
+        <div class="chip">🌕 Trăng tròn sum vầy</div>
+        <div class="chip">🏮 Đèn lồng rực rỡ</div>
+        <div class="chip">🥮 Bánh ngon ngọt ngào</div>
+      </div>
+
+      <div class="actions">
+        <button id="copyBtn">Sao chép link thiệp</button>
+        <a class="btn secondary" id="playBtn">▶️ Phát nhạc</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="fromName">Từ người bạn của bạn 💛</span>
+  </footer>
+
+  <!-- Nhạc: thay file local/đường dẫn online vào src. Không tự phát để tránh chặn của trình duyệt. -->
+  <audio id="bgm" preload="none">
+    <!-- Ví dụ: <source src="https://your.cdn/nhac-trung-thu.mp3" type="audio/mpeg"> -->
+  </audio>
+
+  <script>
+    // Cá nhân hoá tên qua URL: ?to=Lan&from=Vinh&msg=Loi%20chuc
+    const qs = new URLSearchParams(location.search);
+    const to = qs.get('to');
+    const from = qs.get('from');
+    const msg = qs.get('msg');
+
+    if (to) document.getElementById('toName').textContent = to;
+    if (from) document.getElementById('fromName').textContent = `Thân gửi từ ${from} 💛`;
+    if (msg) document.getElementById('message').textContent = msg;
+
+    // Copy link với tham số hiện tại
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(location.href);
+        copyBtn.textContent = '✔️ Đã sao chép';
+        setTimeout(()=> copyBtn.textContent = 'Sao chép link thiệp', 1800);
+      }catch(e){ alert('Không sao chép được, hãy copy thủ công: '+location.href) }
+    });
+
+    // Phát/Ngừng nhạc
+    const playBtn = document.getElementById('playBtn');
+    const bgm = document.getElementById('bgm');
+    let playing = false;
+    playBtn.addEventListener('click', async () => {
+      try{
+        if (!bgm.src){
+          // Gợi ý: thay đường link nhạc của bạn tại đây
+          bgm.src = '';
+        }
+        if(!playing){ await bgm.play(); playing = true; playBtn.textContent = '⏸️ Tạm dừng nhạc'; }
+        else{ bgm.pause(); playing = false; playBtn.textContent = '▶️ Phát nhạc'; }
+      }catch(e){ alert('Hãy bấm lại để cấp quyền phát nhạc.'); }
+    });
+  </script>
+</body>
+</html>
